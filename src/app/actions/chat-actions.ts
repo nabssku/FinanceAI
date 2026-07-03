@@ -174,6 +174,21 @@ export async function sendMessage(conversationId: string, content: string, recei
     if (groqApiKey) {
       try {
         const groq = new Groq({ apiKey: groqApiKey });
+        const promptText = `You are a financial receipt parser. Extract the following information from the receipt photo in JSON format: merchant (string), amount (number representing total amount in IDR), date (string), category (e.g. Groceries, Food, Bills, Subscription, Entertainment, Health, Travel, Salary, Investment, Savings, Gift, Other), type (INCOME, EXPENSE, TRANSFER, BILL, SUBSCRIPTION, INVESTMENT, SAVINGS, LOAN, DEBT, SPLIT_BILL), items (array of {name, price}), and notes (string).
+
+If the user's message: "${content.replace(/"/g, '\\"')}" requests to split the bill (e.g. "patungan"), change the type to "SPLIT_BILL" and include a "splitDetails" object with the following structure:
+{
+  "groupSize": number,
+  "payerName": string,
+  "userPaidFirst": boolean,
+  "userShare": number,
+  "receivables": number,
+  "friendsShares": [{"friendName": string, "shareAmount": number}]
+}
+Assume the total number of participants (groupSize) from the context (e.g. if the user says "untuk Salsabila dan Nabil", assume it is a split of 2 people unless the user explicitly indicates otherwise). Divide the bill equally among all participants (including the user) unless specified.
+
+Respond ONLY with the JSON object.`;
+
         const response = await groq.chat.completions.create({
           model: "qwen/qwen3.6-27b",
           messages: [
@@ -182,7 +197,7 @@ export async function sendMessage(conversationId: string, content: string, recei
               content: [
                 {
                   type: "text",
-                  text: "You are a financial receipt parser. Extract the following information from the receipt photo in JSON format: merchant (string), amount (number representing total amount in IDR), date (string), category (e.g. Groceries, Food, Bills, Subscription, Entertainment, Health, Travel, Salary, Investment, Savings, Gift, Other), type (INCOME, EXPENSE, TRANSFER, BILL, SUBSCRIPTION, INVESTMENT, SAVINGS, LOAN, DEBT, SPLIT_BILL), items (array of {name, price}), and notes (string). Respond ONLY with the JSON object."
+                  text: promptText
                 },
                 {
                   type: "image_url",
@@ -209,9 +224,30 @@ export async function sendMessage(conversationId: string, content: string, recei
         { name: "Barang 1", price: extractedData.amount * 0.4 },
         { name: "Barang 2", price: extractedData.amount * 0.6 }
       ];
+      
+      if (content.toLowerCase().includes("patungan")) {
+        extractedData.type = "SPLIT_BILL";
+        const groupSize = 2;
+        const share = extractedData.amount / groupSize;
+        extractedData.splitDetails = {
+          groupSize,
+          payerName: "You",
+          userPaidFirst: true,
+          userShare: share,
+          receivables: extractedData.amount - share,
+          friendsShares: [
+            { friendName: "Salsabila", shareAmount: share }
+          ]
+        };
+      }
     }
 
-    replyText = `Saya telah menganalisis struk yang diunggah. Saya menemukan transaksi untuk **${extractedData.merchant}** dengan total **Rp${extractedData.amount.toLocaleString('id-ID')}**. Apakah Anda ingin saya menyimpan transaksi ini?`;
+    if (extractedData.type === "SPLIT_BILL" && extractedData.splitDetails) {
+      const details = extractedData.splitDetails;
+      replyText = `Saya mendeteksi struk **${extractedData.merchant}** sebesar **Rp${extractedData.amount.toLocaleString('id-ID')}** dan mengaturnya sebagai **Patungan (Split Bill)**:\n\n* **Bagian Anda**: Rp${details.userShare.toLocaleString('id-ID')}\n* **Piutang Teman**: Rp${details.receivables.toLocaleString('id-ID')}\n\nApakah Anda ingin menyimpan patungan ini?`;
+    } else {
+      replyText = `Saya telah menganalisis struk yang diunggah. Saya menemukan transaksi untuk **${extractedData.merchant}** dengan total **Rp${extractedData.amount.toLocaleString('id-ID')}**. Apakah Anda ingin saya menyimpan transaksi ini?`;
+    }
     messageStatus = "pending_confirmation";
   } else {
     // Standard NLP Chat Flow
