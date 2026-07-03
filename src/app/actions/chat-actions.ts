@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import Groq from "groq-sdk";
+import { recalculateBudgetSpent } from "@/app/actions/budget-actions";
 
 const groqApiKey = process.env.GROQ_API_KEY;
 
@@ -436,42 +437,11 @@ export async function confirmTransaction(messageId: string, updatedData: any) {
     }
   });
 
-  // 5. Update Budget thresholds and create notifications if exceeded
-  if (transaction.type === "EXPENSE" || transaction.type === "BILL" || transaction.type === "SUBSCRIPTION") {
+  // 5. Update Budget spent and trigger notifications
+  if (transaction.type === "EXPENSE" || transaction.type === "BILL" || transaction.type === "SUBSCRIPTION" || transaction.type === "SPLIT_BILL") {
     const month = transaction.date.getMonth() + 1;
     const year = transaction.date.getFullYear();
-    
-    // Find budget for this category
-    const budget = await db.budget.findUnique({
-      where: {
-        userId_category_month_year: {
-          userId,
-          category: transaction.category,
-          month,
-          year
-        }
-      }
-    });
-
-    if (budget) {
-      const updatedSpent = budget.spent + transaction.amount;
-      await db.budget.update({
-        where: { id: budget.id },
-        data: { spent: updatedSpent }
-      });
-
-      if (updatedSpent > budget.limit) {
-        // Create budget exceeded notification
-        await db.notification.create({
-          data: {
-            userId,
-            title: `Budget Exceeded: ${transaction.category}`,
-            content: `You spent Rp${updatedSpent.toLocaleString('id-ID')} which exceeds your budget limit of Rp${budget.limit.toLocaleString('id-ID')} for ${transaction.category}.`,
-            type: "BUDGET_EXCEEDED"
-          }
-        });
-      }
-    }
+    await recalculateBudgetSpent(userId, transaction.category, month, year);
   }
 
   // 6. Mark message as confirmed/saved

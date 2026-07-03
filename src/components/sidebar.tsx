@@ -33,7 +33,7 @@ export function Sidebar({ theme }: { theme?: string }) {
   ];
 
   return (
-    <aside className={`w-64 border-r border-[#27272A] flex flex-col h-screen sticky top-0 shrink-0 z-30 transition-all duration-300 ${theme === 'glass' ? 'bg-[#18181B]/60 backdrop-blur-xl' : 'bg-[#18181B]'
+    <aside className={`hidden md:flex w-64 border-r border-[#27272A] flex-col h-screen sticky top-0 shrink-0 z-30 transition-all duration-300 ${theme === 'glass' ? 'bg-[#18181B]/60 backdrop-blur-xl' : 'bg-[#18181B]'
       }`}>
       {/* Brand Header */}
       <div className="p-6 border-b border-[#27272A] flex items-center gap-3">

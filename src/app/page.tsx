@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -10,23 +10,20 @@ import {
   TrendingUp, 
   BellRing, 
   ShieldAlert, 
-  ChevronRight, 
-  ArrowRight,
-  Plus,
-  Minus
+  Plus, 
+  Minus,
+  ArrowRight
 } from "lucide-react";
 
 export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-
-  // Simulated Chat animation state
   const [chatStep, setChatStep] = useState(0);
   
   const chatScenarios = [
-    { role: "user", text: "I bought coffee for Rp35.000 at Starbucks" },
-    { role: "assistant", card: { merchant: "Starbucks", amount: 35000, category: "Food", type: "EXPENSE" } },
-    { role: "user", text: "Split restaurant bill Rp450.000 with Sarah and David" },
-    { role: "assistant", card: { merchant: "Restaurant", amount: 450000, category: "Food", type: "SPLIT_BILL", split: "3 ways (Sarah, David, You)" } }
+    { role: "user", text: "Saya membeli kopi seharga Rp35.000 di Starbucks" },
+    { role: "assistant", card: { merchant: "Starbucks", amount: 35000, category: "Makanan", type: "EXPENSE" } },
+    { role: "user", text: "Bagi tagihan makan malam Rp450.000 dengan Sarah dan Nabil" },
+    { role: "assistant", card: { merchant: "Restoran", amount: 450000, category: "Makanan", type: "SPLIT_BILL", split: "Dibagi 3 (Sarah, Nabil, Anda)" } }
   ];
 
   useEffect(() => {
@@ -43,52 +40,52 @@ export default function LandingPage() {
   const features = [
     {
       icon: Sparkles,
-      title: "Conversational Logs",
-      desc: "Speak naturally to your money. Tell it what you earned, spent, or moved. No manual fields, ever."
+      title: "Pencatatan Berbasis Obrolan",
+      desc: "Ketik secara alami seperti sedang mengobrol biasa. Beri tahu pemasukan, pengeluaran, atau transfer tanpa perlu mengisi formulir manual."
     },
     {
       icon: Receipt,
-      title: "Instant OCR Scan",
-      desc: "Drag or snap receipt photos. Our AI maps totals, items, dates, and categories immediately."
+      title: "Pemindaian Struk Instan (OCR)",
+      desc: "Unggah atau foto struk belanjaan Anda. AI kami langsung mengekstrak nama toko, nominal, tanggal, dan menyarankan kategori otomatis."
     },
     {
       icon: Split,
-      title: "Dynamic Split Bills",
-      desc: "Unequal shares, custom friend lists, and automatically calculated receivables with one confirmation."
+      title: "Pembagian Tagihan Dinamis (Split Bill)",
+      desc: "Hitung porsi pembayaran masing-masing rekan patungan Anda secara instan dan buat tautan pembayaran publik untuk ditagih ke teman."
     },
     {
       icon: TrendingUp,
-      title: "Spline Analytics",
-      desc: "Vibrant custom chart dashboards displaying budgets, weekly trends, and top spending brackets."
+      title: "Visualisasi Analisis Interaktif",
+      desc: "Pantau diagram kemajuan pengeluaran bulanan, riwayat mingguan, hingga anggaran yang terpakai dengan grafik modern."
     },
     {
       icon: BellRing,
-      title: "Budget Alarms",
-      desc: "Set category metrics. Receive subtle system-wide reminders before limits are breached."
+      title: "Pengingat Batas Anggaran",
+      desc: "Atur batas maksimal pengeluaran bulanan untuk kategori tertentu dan terima alarm peringatan sebelum anggaran Anda terlewati."
     },
     {
       icon: ShieldAlert,
-      title: "Zero-Auto-Save Protection",
-      desc: "The AI extracts and pre-populates everything, but never saves a single rupiah until you click 'Save'."
+      title: "Proteksi Konfirmasi Pengguna",
+      desc: "AI hanya membantu membaca struk dan menyiapkan draf. Tidak ada satu rupiah pun yang disimpan ke database sebelum Anda menyetujuinya."
     }
   ];
 
   const faqs = [
     {
-      q: "Does FinanceAI connect directly to my bank accounts?",
-      a: "No. FinanceAI prioritizes user privacy and manual confirmation. Instead of automated syncing which can feel invasive, you input transactions naturally in conversation or via photo, confirming each entry."
+      q: "Apakah FinanceAI terhubung langsung ke rekening bank saya?",
+      a: "Tidak. FinanceAI sangat menghargai privasi Anda dan menolak sinkronisasi otomatis ke rekening bank yang seringkali terasa invasif. Anda mencatat secara mandiri melalui obrolan AI atau foto struk dan memegang kendali penuh atas konfirmasi data."
     },
     {
-      q: "How secure is my receipt photo upload?",
-      a: "Your receipt photos are processed securely using encrypted connections and hosted on Vercel/Cloudinary storage. Your personal information is never shared or used to train public LLM weights."
+      q: "Bagaimana dengan keamanan foto struk yang saya unggah?",
+      a: "Foto struk Anda diunggah dengan aman menggunakan protokol enkripsi HTTPS melalui Cloudinary dan Vercel. Kami tidak pernah membagikan data atau foto Anda kepada pihak ketiga."
     },
     {
-      q: "Can I customize spending categories and budgets?",
-      a: "Yes! FinanceAI comes with pre-defined categories and allows you to set custom monthly budgets. The AI learns your custom categories and automatically suggests them for future logs."
+      q: "Apakah saya bisa menyesuaikan kategori dan anggaran bulanan?",
+      a: "Tentu saja! FinanceAI dilengkapi dengan kategori finansial bawaan dan membebaskan Anda menyetel batas maksimal pengeluaran bulanan untuk masing-masing kategori guna memantau arus kas harian Anda."
     },
     {
-      q: "What AI models process the text inputs and receipts?",
-      a: "FinanceAI utilizes high-throughput Groq APIs running Llama 3.3 for lightning-fast natural language parsing, and Llama 3.2 Vision for receipt OCR analysis."
+      q: "Model AI apa yang digunakan untuk memproses data chat dan struk?",
+      a: "FinanceAI menggunakan API Groq berkinerja tinggi yang didukung oleh model Llama untuk menganalisis teks obrolan secara instan, serta Llama Vision untuk memindai dan mengenali teks pada foto struk belanjaan Anda."
     }
   ];
 
@@ -105,23 +102,23 @@ export default function LandingPage() {
             <span className="font-bold text-lg text-[#FAFAFA] tracking-tight">FinanceAI</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm text-[#A1A1AA]">
-            <a href="#features" className="hover:text-[#FAFAFA] transition-colors">Features</a>
-            <a href="#preview" className="hover:text-[#FAFAFA] transition-colors">AI Preview</a>
-            <a href="#pricing" className="hover:text-[#FAFAFA] transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-[#FAFAFA] transition-colors">FAQ</a>
+            <a href="#features" className="hover:text-[#FAFAFA] transition-colors">Fitur Utama</a>
+            <a href="#preview" className="hover:text-[#FAFAFA] transition-colors">Demo Chat AI</a>
+            <a href="#pricing" className="hover:text-[#FAFAFA] transition-colors">Gratis Selamanya</a>
+            <a href="#faq" className="hover:text-[#FAFAFA] transition-colors">Tanya Jawab</a>
           </nav>
           <div className="flex items-center gap-4">
             <Link 
               href="/login" 
               className="text-sm font-semibold text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors"
             >
-              Sign In
+              Masuk
             </Link>
             <Link 
               href="/login" 
               className="px-4 py-2 rounded-lg bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 transition-all neon-glow-primary"
             >
-              Get Started
+              Mulai Sekarang
             </Link>
           </div>
         </div>
@@ -129,7 +126,6 @@ export default function LandingPage() {
 
       {/* HERO SECTION */}
       <section className="relative pt-20 pb-24 overflow-hidden border-b border-[#27272A]">
-        {/* Background blobs */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-600/10 rounded-full blur-3xl -z-10" />
         <div className="absolute top-20 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl -z-10" />
 
@@ -137,30 +133,30 @@ export default function LandingPage() {
           <div className="md:col-span-7 flex flex-col gap-6 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-indigo-400 w-fit">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Personal Finance Reimagined</span>
+              <span>Cara Baru Mencatat Keuangan Pribadi</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
-              Talk to your money.<br />
+              Bicara dengan uang Anda.<br />
               <span className="bg-gradient-to-r from-indigo-400 via-indigo-500 to-emerald-400 bg-clip-text text-transparent">
-                AI extracts, you confirm.
+                AI mencatat, Anda konfirmasi.
               </span>
             </h1>
             <p className="text-base md:text-lg text-[#A1A1AA] max-w-xl leading-relaxed">
-              Ditch complicated forms. Record income, expenses, and split restaurant receipts by texting our AI assistant or snapping a photo. Take complete command with zero auto-save anxiety.
+              Tinggalkan formulir pencatatan yang rumit. Catat pemasukan, pengeluaran, dan bagi struk belanja bersama teman (split bill) hanya dengan berkirim pesan alami ke asisten AI atau unggah foto struk belanja Anda.
             </p>
             <div className="flex flex-wrap gap-4 mt-2">
               <Link 
                 href="/login" 
-                className="px-6 py-3.5 rounded-xl bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 transition-all neon-glow-primary flex items-center gap-2 group"
+                className="px-6 py-3.5 rounded-xl bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 transition-all neon-glow-primary flex items-center gap-2 group cursor-pointer"
               >
-                <span>Get Started Free</span>
+                <span>Mulai Gratis Selamanya</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <a 
                 href="#preview" 
                 className="px-6 py-3.5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3F3F46] hover:bg-[#202024] text-sm font-bold text-[#FAFAFA] transition-all"
               >
-                See Live Mock Chat
+                Lihat Demo Obrolan
               </a>
             </div>
           </div>
@@ -174,9 +170,9 @@ export default function LandingPage() {
               <div className="flex items-center justify-between border-b border-[#27272A]/50 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span className="text-xs font-semibold text-[#FAFAFA]">Assistant Sandbox</span>
+                  <span className="text-xs font-semibold text-[#FAFAFA]">Demo Interaksi Asisten AI</span>
                 </div>
-                <span className="text-[10px] text-[#A1A1AA]">Press Demo to test inside</span>
+                <span className="text-[10px] text-[#A1A1AA]">Demo berjalan otomatis</span>
               </div>
 
               {/* Chat Body */}
@@ -192,7 +188,7 @@ export default function LandingPage() {
                     <div className="flex items-center justify-between border-b border-[#27272A] pb-2">
                       <span className="font-bold text-indigo-400 flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5" />
-                        AI Extracted Transaction
+                        AI Hasil Ekstraksi Transaksi
                       </span>
                       <span className="text-[9px] text-[#A1A1AA] uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-semibold border border-indigo-500/20">
                         {chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.type}
@@ -205,16 +201,16 @@ export default function LandingPage() {
                         <p className="font-semibold text-[#FAFAFA]">{chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.merchant}</p>
                       </div>
                       <div>
-                        <span>Amount:</span>
+                        <span>Total:</span>
                         <p className="font-semibold text-emerald-400">Rp{chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.amount?.toLocaleString('id-ID')}</p>
                       </div>
                       <div>
-                        <span>Category:</span>
+                        <span>Kategori:</span>
                         <p className="font-semibold text-[#FAFAFA]">{chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.category}</p>
                       </div>
                       {chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.split && (
                         <div>
-                          <span>Split:</span>
+                          <span>Patungan:</span>
                           <p className="font-semibold text-indigo-300">{chatScenarios[Math.min(chatStep - 1, 1) * 2 + 1]?.card?.split}</p>
                         </div>
                       )}
@@ -222,13 +218,13 @@ export default function LandingPage() {
 
                     <div className="flex gap-2 mt-2 pt-2 border-t border-[#27272A]/50">
                       <button className="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-[10px] hover:bg-indigo-700 transition-colors">
-                        Save
+                        Simpan
                       </button>
                       <button className="px-3 py-1.5 rounded-lg bg-[#27272A] text-[#FAFAFA] font-semibold text-[10px] hover:bg-zinc-800">
-                        Edit
+                        Ubah
                       </button>
                       <button className="px-3 py-1.5 rounded-lg bg-[#18181B] text-[#A1A1AA] text-[10px] hover:text-red-400">
-                        Cancel
+                        Batal
                       </button>
                     </div>
                   </div>
@@ -236,7 +232,7 @@ export default function LandingPage() {
 
                 {chatStep === 0 && (
                   <div className="flex-1 flex items-center justify-center text-center text-xs text-[#A1A1AA]">
-                    Simulating typical conversational interaction...
+                    Simulasi interaksi pencatatan asisten...
                   </div>
                 )}
               </div>
@@ -249,10 +245,10 @@ export default function LandingPage() {
       <section id="features" className="py-24 max-w-7xl mx-auto px-6 scroll-mt-10">
         <div className="text-center max-w-2xl mx-auto mb-16 flex flex-col gap-4">
           <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-            Clean interface. Linear feel. Deep logic.
+            Tampilan Bersih. Logika Presisi. Keamanan Utama.
           </h2>
           <p className="text-[#A1A1AA] text-sm md:text-base">
-            No messy configurations or banking credentials required. Retain complete control with streamlined startup styling.
+            Tanpa perlu sinkronisasi kredensial bank yang berisiko. Kendalikan penuh catatan finansial Anda secara mandiri.
           </p>
         </div>
 
@@ -272,64 +268,59 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PRICING PLANS */}
-      <section id="pricing" className="py-24 border-t border-b border-[#27272A] bg-[#121214]/40">
+      {/* 100% FREE VALUE SECTION (REPLACED PRICING PACKAGES) */}
+      <section id="pricing" className="py-24 border-t border-b border-[#27272A] bg-[#121214]/40 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-indigo-600/5 rounded-full blur-3xl -z-10" />
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16 flex flex-col gap-4">
-            <h2 className="text-3xl font-bold tracking-tight">Flexible pricing for creators</h2>
-            <p className="text-[#A1A1AA] text-sm">Start tracking free, or scale to premium with multi-receipt automation and deep charts.</p>
+          <div className="text-center max-w-2xl mx-auto mb-12 flex flex-col gap-4">
+            <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 w-fit mx-auto uppercase tracking-widest">
+              Aplikasi 100% Gratis
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">Semua Fitur Bebas Digunakan Tanpa Batas</h2>
+            <p className="text-[#A1A1AA] text-sm md:text-base">
+              Tidak ada paket berbayar, tidak ada langganan bulanan, dan tidak ada batasan kuota fitur.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Free Tier */}
-            <div className="glass-panel rounded-xl p-8 border border-[#27272A] flex flex-col justify-between gap-8">
-              <div className="flex flex-col gap-4">
-                <span className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">Free Sandbox</span>
-                <h3 className="text-3xl font-bold">Rp0</h3>
-                <p className="text-xs text-[#A1A1AA]">Perfect for individual monthly budget logging and natural language tracking.</p>
-                <div className="h-px bg-[#27272A] my-2" />
-                <ul className="space-y-2 text-xs text-[#FAFAFA] flex flex-col gap-1">
-                  <li className="flex items-center gap-2">✓ Natural language chat assistant</li>
-                  <li className="flex items-center gap-2">✓ Manual confirmation workflow</li>
-                  <li className="flex items-center gap-2">✓ Standard dashboard & budget meters</li>
-                  <li className="flex items-center gap-2">✓ 15 Receipt uploads per month</li>
-                </ul>
-              </div>
-              <Link 
-                href="/login" 
-                className="w-full py-3 rounded-lg bg-[#27272A] text-center font-bold text-xs text-[#FAFAFA] hover:bg-zinc-800 transition-colors"
-              >
-                Sign Up Free
-              </Link>
-            </div>
-
-            {/* Pro Tier */}
-            <div className="glass-panel rounded-xl p-8 border-2 border-indigo-600 flex flex-col justify-between gap-8 relative overflow-hidden shadow-indigo-950/20 shadow-2xl">
-              <div className="absolute top-0 right-0 px-3 py-1 bg-indigo-600 text-[10px] font-bold text-white rounded-bl-lg uppercase tracking-wide">
-                RECOMMENDED
+          <div className="max-w-3xl mx-auto glass-panel border border-[#27272A] rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white">Bebas Akses Kapan Saja</h3>
+                <p className="text-xs text-[#A1A1AA] leading-relaxed">
+                  FinanceAI didesain sebagai platform pencatatan keuangan mandiri yang sepenuhnya terbuka dan gratis untuk membantu pengelolaan keuangan harian Anda tanpa kecemasan biaya tambahan.
+                </p>
+                <div className="pt-2">
+                  <Link 
+                    href="/login" 
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-xs font-bold text-white transition-all shadow-lg shadow-indigo-600/10 cursor-pointer"
+                  >
+                    <span>Mulai Catat Sekarang</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
               
-              <div className="flex flex-col gap-4">
-                <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Pro Edition</span>
-                <h3 className="text-3xl font-bold">
-                  Rp149.000 <span className="text-xs text-[#A1A1AA] font-normal">/ month</span>
-                </h3>
-                <p className="text-xs text-[#A1A1AA]">Unlock infinite visual analytics, split receipt exports, and advanced AI categories.</p>
-                <div className="h-px bg-[#27272A] my-2" />
-                <ul className="space-y-2 text-xs text-[#FAFAFA] flex flex-col gap-1">
-                  <li className="flex items-center gap-2 text-indigo-400">✓ Everything in Free</li>
-                  <li className="flex items-center gap-2">✓ Unlimited receipt uploads & OCR scans</li>
-                  <li className="flex items-center gap-2">✓ Rich weekly & monthly spline analytics</li>
-                  <li className="flex items-center gap-2">✓ Advanced split bills (unequal, unlimited friends)</li>
-                  <li className="flex items-center gap-2">✓ Custom category creation & API exports</li>
+              <div className="space-y-3.5 border-t md:border-t-0 md:border-l border-[#27272A] pt-6 md:pt-0 md:pl-8">
+                <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Keunggulan Gratis Kami:</h4>
+                <ul className="space-y-2.5 text-xs text-[#FAFAFA]">
+                  <li className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Pemindaian OCR struk tanpa batas</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Akses asisten chat pintar sepuasnya</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Bagi tagihan (split bill) sepuasnya</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Dashboard grafik analisis lengkap</span>
+                  </li>
                 </ul>
               </div>
-              <Link 
-                href="/login" 
-                className="w-full py-3 rounded-lg bg-indigo-600 text-center font-bold text-xs text-white hover:bg-indigo-700 transition-colors neon-glow-primary"
-              >
-                Get Pro Access
-              </Link>
             </div>
           </div>
         </div>
@@ -337,7 +328,7 @@ export default function LandingPage() {
 
       {/* FAQ SECTION */}
       <section id="faq" className="py-24 max-w-4xl mx-auto px-6 w-full scroll-mt-10">
-        <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">Pertanyaan yang Sering Diajukan</h2>
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
             <div key={idx} className="border-b border-[#27272A] pb-4">
@@ -365,13 +356,13 @@ export default function LandingPage() {
             <WalletCards className="w-4 h-4 text-indigo-400" />
             <span className="font-semibold text-[#FAFAFA]">FinanceAI © 2026</span>
           </div>
-          <p className="text-[10px] text-zinc-600">
-            Powered by Next.js 15, Prisma 7, Neon Serverless Postgres, and Groq APIs. Made with venture-grade attention.
+          <p className="text-[10px] text-[#A1A1AA] max-w-md leading-normal">
+            Diberdayakan oleh Next.js, Prisma, Neon Serverless Postgres, dan Groq AI. Dibuat dengan presisi dan perhatian tingkat tinggi.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Privacy</a>
-            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Terms</a>
-            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Support</a>
+            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Privasi</a>
+            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Ketentuan</a>
+            <a href="#" className="hover:text-[#FAFAFA] transition-colors">Bantuan</a>
           </div>
         </div>
       </footer>

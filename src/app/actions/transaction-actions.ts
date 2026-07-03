@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import Groq from "groq-sdk";
+import { recalculateBudgetSpent } from "@/app/actions/budget-actions";
 
 const groqApiKey = process.env.GROQ_API_KEY;
 
@@ -95,6 +96,12 @@ export async function createTransaction(data: {
     }
   });
 
+  if (tx.type === "EXPENSE" || tx.type === "BILL" || tx.type === "SUBSCRIPTION" || tx.type === "SPLIT_BILL") {
+    const month = tx.date.getMonth() + 1;
+    const year = tx.date.getFullYear();
+    await recalculateBudgetSpent(userId, tx.category, month, year);
+  }
+
   revalidatePath("/dashboard");
   revalidatePath("/transactions");
   return tx;
@@ -126,6 +133,17 @@ export async function updateTransaction(id: string, data: any) {
     }
   });
 
+  if (existing.type === "EXPENSE" || existing.type === "BILL" || existing.type === "SUBSCRIPTION" || existing.type === "SPLIT_BILL") {
+    const oldMonth = new Date(existing.date).getMonth() + 1;
+    const oldYear = new Date(existing.date).getFullYear();
+    await recalculateBudgetSpent(userId, existing.category, oldMonth, oldYear);
+  }
+  if (tx.type === "EXPENSE" || tx.type === "BILL" || tx.type === "SUBSCRIPTION" || tx.type === "SPLIT_BILL") {
+    const newMonth = tx.date.getMonth() + 1;
+    const newYear = tx.date.getFullYear();
+    await recalculateBudgetSpent(userId, tx.category, newMonth, newYear);
+  }
+
   revalidatePath("/dashboard");
   revalidatePath("/transactions");
   return tx;
@@ -147,6 +165,12 @@ export async function deleteTransaction(id: string) {
   await db.transaction.delete({
     where: { id }
   });
+
+  if (existing.type === "EXPENSE" || existing.type === "BILL" || existing.type === "SUBSCRIPTION" || existing.type === "SPLIT_BILL") {
+    const month = new Date(existing.date).getMonth() + 1;
+    const year = new Date(existing.date).getFullYear();
+    await recalculateBudgetSpent(userId, existing.category, month, year);
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/transactions");

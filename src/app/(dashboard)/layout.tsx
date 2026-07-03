@@ -1,6 +1,7 @@
 import React from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
+import { MobileNav } from "@/components/mobile-nav";
 import { getSettings } from "@/app/actions/settings-actions";
 
 export default async function DashboardLayout({
@@ -26,12 +27,15 @@ export default async function DashboardLayout({
         <Navbar theme={theme} />
         
         {/* Scrollable interior workspace */}
-        <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${
+        <main className={`flex-1 overflow-y-auto p-6 pb-20 md:pb-6 transition-all duration-300 ${
           theme === "glass" ? "bg-transparent" : "bg-[#09090B]"
         }`}>
           {children}
         </main>
       </div>
+
+      {/* Mobile navigation tab bar */}
+      <MobileNav />
     </div>
   );
 }
