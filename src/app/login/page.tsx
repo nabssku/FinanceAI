@@ -1,13 +1,12 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import { WalletCards, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { WalletCards, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const [loadingDemo, setLoadingDemo] = useState(false);
 
   const handleGoogleLogin = async () => {
     setLoadingGoogle(true);
@@ -16,16 +15,6 @@ export default function LoginPage() {
     } catch (e) {
       console.error(e);
       setLoadingGoogle(false);
-    }
-  };
-
-  const handleDemoLogin = async () => {
-    setLoadingDemo(true);
-    try {
-      await signIn("demo", { callbackUrl: "/dashboard" });
-    } catch (e) {
-      console.error(e);
-      setLoadingDemo(false);
     }
   };
 
@@ -42,9 +31,9 @@ export default function LoginPage() {
           <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center neon-glow-primary mb-4">
             <WalletCards className="w-6 h-6 text-[#FAFAFA]" />
           </div>
-          <h2 className="text-2xl font-bold text-[#FAFAFA] tracking-tight">Welcome to FinanceAI</h2>
+          <h2 className="text-2xl font-bold text-[#FAFAFA] tracking-tight">Selamat Datang di FinanceAI</h2>
           <p className="text-xs text-[#A1A1AA] mt-1 max-w-[280px]">
-            Conversational personal finance tracker backed by deep intelligence
+            Pencatat keuangan pribadi berbasis obrolan dengan kecerdasan buatan.
           </p>
         </div>
 
@@ -53,8 +42,8 @@ export default function LoginPage() {
           {/* Google Sign In */}
           <button
             onClick={handleGoogleLogin}
-            disabled={loadingGoogle || loadingDemo}
-            className="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-white text-black hover:bg-neutral-200 transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
+            disabled={loadingGoogle}
+            className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm bg-white text-black hover:bg-neutral-200 transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
           >
             {loadingGoogle ? (
               <span className="w-4 h-4 rounded-full border-2 border-zinc-300 border-t-zinc-800 animate-spin" />
@@ -78,22 +67,7 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            <span>Sign in with Google</span>
-          </button>
-
-          {/* Quick Sandbox/Demo Sign In */}
-          <button
-            onClick={handleDemoLogin}
-            disabled={loadingGoogle || loadingDemo}
-            className="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-indigo-600 hover:bg-indigo-700 text-[#FAFAFA] transition-all flex items-center justify-center gap-3 cursor-pointer neon-glow-primary disabled:opacity-50 relative group overflow-hidden"
-          >
-            {loadingDemo ? (
-              <span className="w-4 h-4 rounded-full border-2 border-indigo-400 border-t-white animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4 text-indigo-200" />
-            )}
-            <span>Explore Demo Account</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <span>Masuk dengan Google</span>
           </button>
         </div>
 
@@ -101,10 +75,10 @@ export default function LoginPage() {
         <div className="mt-8 pt-6 border-t border-[#27272A] flex flex-col gap-3 text-center">
           <div className="flex items-center justify-center gap-2 text-[10px] text-[#A1A1AA]">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Secure SSL communication & data privacy encryption</span>
+            <span>Komunikasi SSL aman & enkripsi privasi data</span>
           </div>
           <p className="text-[10px] text-[#A1A1AA] leading-relaxed">
-            By signing in, you agree to our Terms of Service. Authentication and account provisioning are handled automatically.
+            Dengan masuk, Anda menyetujui Ketentuan Layanan kami. Otentikasi dan pembuatan akun ditangani secara otomatis.
           </p>
         </div>
       </div>
@@ -112,9 +86,9 @@ export default function LoginPage() {
       {/* Back to landing */}
       <Link 
         href="/"
-        className="mt-6 text-xs text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors"
+        className="mt-6 text-xs text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors font-medium"
       >
-        ← Back to landing page
+        ← Kembali ke halaman utama
       </Link>
     </main>
   );
