@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import Groq from "groq-sdk";
 
 const groqApiKey = process.env.GROQ_API_KEY;
@@ -467,7 +468,11 @@ export async function confirmTransaction(messageId: string, updatedData: any) {
   });
 
   if (transaction.type === "SPLIT_BILL" && splitBillId) {
-    const shareUrl = `/share/split/${splitBillId}`;
+    const headersList = await headers();
+    const host = headersList.get("host") || "localhost:3000";
+    const protocol = headersList.get("x-forwarded-proto") || "http";
+    const baseUrl = `${protocol}://${host}`;
+    const shareUrl = `${baseUrl}/share/split/${splitBillId}`;
     await db.aIMessage.create({
       data: {
         conversationId: message.conversationId,
