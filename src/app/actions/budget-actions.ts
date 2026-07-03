@@ -26,7 +26,7 @@ export async function getBudgets(month?: number, year?: number) {
   });
 
   const categoryExpenses: Record<string, number> = {};
-  transactions.forEach(tx => {
+  transactions.forEach((tx: any) => {
     const txDate = new Date(tx.date);
     if (txDate.getMonth() + 1 === m && txDate.getFullYear() === y) {
       categoryExpenses[tx.category] = (categoryExpenses[tx.category] || 0) + tx.amount;
@@ -34,7 +34,7 @@ export async function getBudgets(month?: number, year?: number) {
   });
 
   // 3. Map or create updated results to make sure 'spent' values are exact
-  const items = budgets.map(b => ({
+  const items = budgets.map((b: any) => ({
     ...b,
     spent: categoryExpenses[b.category] || 0
   }));
@@ -60,7 +60,7 @@ export async function saveBudget(category: string, limit: number, month?: number
   });
 
   let spent = 0;
-  transactions.forEach(tx => {
+  transactions.forEach((tx: any) => {
     const txDate = new Date(tx.date);
     if (txDate.getMonth() + 1 === m && txDate.getFullYear() === y) {
       spent += tx.amount;

@@ -174,7 +174,7 @@ export async function getDashboardStats() {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
-  transactions.forEach((tx) => {
+  transactions.forEach((tx: any) => {
     const txDate = new Date(tx.date);
     const isCurrentMonth = txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
 
@@ -200,7 +200,7 @@ export async function getDashboardStats() {
   // Category breakdown
   const categoryMap: Record<string, number> = {};
   transactions
-    .filter(tx => {
+    .filter((tx: any) => {
       const txDate = new Date(tx.date);
       return (
         txDate.getMonth() === currentMonth && 
@@ -208,7 +208,7 @@ export async function getDashboardStats() {
         ["EXPENSE", "BILL", "SUBSCRIPTION", "SPLIT_BILL"].includes(tx.type)
       );
     })
-    .forEach(tx => {
+    .forEach((tx: any) => {
       categoryMap[tx.category] = (categoryMap[tx.category] || 0) + tx.amount;
     });
 
@@ -240,7 +240,7 @@ export async function getDashboardStats() {
     let inc = 0;
     let exp = 0;
 
-    transactions.forEach(tx => {
+    transactions.forEach((tx: any) => {
       const txDate = new Date(tx.date);
       if (txDate.getMonth() === month && txDate.getFullYear() === year) {
         if (tx.type === "INCOME") inc += tx.amount;
@@ -263,9 +263,9 @@ export async function getDashboardStats() {
 
   // Upcoming bills (simulated or flagged as BILL/SUBSCRIPTION with dates in current month)
   const upcomingBills = transactions
-    .filter(tx => (tx.type === "BILL" || tx.type === "SUBSCRIPTION") && new Date(tx.date).getDate() >= new Date().getDate())
+    .filter((tx: any) => (tx.type === "BILL" || tx.type === "SUBSCRIPTION") && new Date(tx.date).getDate() >= new Date().getDate())
     .slice(0, 3)
-    .map(tx => ({
+    .map((tx: any) => ({
       id: tx.id,
       merchant: tx.merchant,
       amount: tx.amount,
@@ -309,7 +309,7 @@ export async function getAIInsights() {
   let coffeeTotal = 0;
   let billsTotal = 0;
   
-  transactions.forEach(tx => {
+  transactions.forEach((tx: any) => {
     if (tx.category === "Food") foodTotal += tx.amount;
     if (tx.merchant.toLowerCase().includes("coffee") || tx.merchant.toLowerCase().includes("kopi")) {
       coffeeTotal += tx.amount;
