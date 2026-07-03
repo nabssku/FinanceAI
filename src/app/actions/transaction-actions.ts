@@ -258,7 +258,7 @@ export async function getDashboardStats() {
 
   // Recent transactions
   const recentTransactions = [...transactions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
   // Upcoming bills (simulated or flagged as BILL/SUBSCRIPTION with dates in current month)
@@ -347,7 +347,7 @@ export async function getAIInsights() {
 
   // Local rule-based fallback insights
   const insights = [
-    `Anda mencatat ${transactions.length} transaksi pada periode ini. Pengeluaran terbesar Anda adalah untuk ${transactions.sort((a, b) => b.amount - a.amount)[0]?.merchant || "Merchant Umum"}.`,
+    `Anda mencatat ${transactions.length} transaksi pada periode ini. Pengeluaran terbesar Anda adalah untuk ${[...transactions].sort((a: any, b: any) => b.amount - a.amount)[0]?.merchant || "Merchant Umum"}.`,
     foodTotal > 0 
       ? `Total pengeluaran makan/kuliner Anda adalah Rp${foodTotal.toLocaleString('id-ID')}, yang merupakan bagian utama dari aliran kas keluar bulanan.`
       : "Anda belum mencatat pengeluaran makanan. Coba tulis 'Beli burger Rp45.000'.",
