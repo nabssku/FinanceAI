@@ -19,7 +19,7 @@ import {
 export const revalidate = 0; // Fresh updates on navigation
 
 export default async function AnalyticsPage() {
-  const transactions = await getTransactions();
+  const transactions: any[] = await getTransactions();
 
   // 1. Core Summary Math
   let totalIncome = 0;
