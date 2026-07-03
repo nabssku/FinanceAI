@@ -394,7 +394,9 @@ export default function ChatPage() {
                       : 'bg-[#09090B]/60 text-[#FAFAFA] border-[#27272A]'
                   }`}>
                     {/* Render raw content text */}
-                    <p className="whitespace-pre-line">{msg.content}</p>
+                    <div className="whitespace-pre-line leading-relaxed space-y-1.5">
+                      {parseMarkdownToJSX(msg.content)}
+                    </div>
 
                     {/* Render user receipt thumbnail inside chat if present */}
                     {msg.receiptUrl && (
@@ -806,4 +808,82 @@ export default function ChatPage() {
       </div>
     </div>
   );
+}
+
+// Lightweight custom markdown parser to avoid importing heavy external packages
+function parseMarkdownToJSX(text: string) {
+  if (!text) return null;
+
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let match;
+  let key = 0;
+
+  const lines = text.split("\n");
+  return lines.map((line, lineIdx) => {
+    const lineParts: React.ReactNode[] = [];
+    let lastIdx = 0;
+    linkRegex.lastIndex = 0; // reset
+    
+    while ((match = linkRegex.exec(line)) !== null) {
+      if (match.index > lastIdx) {
+        lineParts.push(renderTextWithFormatting(line.substring(lastIdx, match.index), key++));
+      }
+      
+      const label = match[1];
+      const url = match[2];
+      const isExternal = url.startsWith("http") || url.startsWith("https");
+      
+      lineParts.push(
+        <a 
+          key={key++} 
+          href={url} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          className="text-indigo-400 hover:text-indigo-300 font-bold underline transition-colors"
+        >
+          {label}
+        </a>
+      );
+      
+      lastIdx = linkRegex.lastIndex;
+    }
+    
+    if (lastIdx < line.length) {
+      lineParts.push(renderTextWithFormatting(line.substring(lastIdx), key++));
+    }
+    
+    return (
+      <span key={lineIdx} className="block min-h-[1em]">
+        {lineParts}
+      </span>
+    );
+  });
+}
+
+function renderTextWithFormatting(text: string, parentKey: number): React.ReactNode {
+  const codeParts = text.split(/`([^`]+)`/g);
+  let key = 0;
+  
+  return codeParts.map((part, idx) => {
+    const isCode = idx % 2 === 1;
+    if (isCode) {
+      return (
+        <code 
+          key={`${parentKey}-code-${key++}`} 
+          className="px-2 py-0.5 mx-0.5 rounded bg-zinc-950 border border-[#27272A] text-[#FAFAFA] font-mono text-[10px] select-all cursor-pointer hover:bg-zinc-900 transition-colors inline-block"
+        >
+          {part}
+        </code>
+      );
+    }
+    
+    const boldParts = part.split(/\*\*([^*]+)\*\*/g);
+    return boldParts.map((subPart, subIdx) => {
+      const isBold = subIdx % 2 === 1;
+      if (isBold) {
+        return <strong key={`${parentKey}-bold-${key++}`} className="font-bold text-white">{subPart}</strong>;
+      }
+      return subPart;
+    });
+  });
 }

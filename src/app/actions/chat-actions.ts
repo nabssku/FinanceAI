@@ -175,7 +175,17 @@ export async function sendMessage(conversationId: string, content: string, recei
     if (groqApiKey) {
       try {
         const groq = new Groq({ apiKey: groqApiKey });
-        const promptText = `You are a financial receipt parser. Extract the following information from the receipt photo in JSON format: merchant (string), amount (number representing total amount in IDR), date (string), category (e.g. Groceries, Food, Bills, Subscription, Entertainment, Health, Travel, Salary, Investment, Savings, Gift, Other), type (INCOME, EXPENSE, TRANSFER, BILL, SUBSCRIPTION, INVESTMENT, SAVINGS, LOAN, DEBT, SPLIT_BILL), items (array of {name, price}), and notes (string).
+        
+        const isSplitRequest = content && (
+          content.toLowerCase().includes("patungan") || 
+          content.toLowerCase().includes("split") || 
+          content.toLowerCase().includes("bagi")
+        );
+
+        let promptText = `You are a financial receipt parser. Extract the following information from the receipt photo in JSON format: merchant (string), amount (number representing total amount in IDR), date (string), category (e.g. Groceries, Food, Bills, Subscription, Entertainment, Health, Travel, Salary, Investment, Savings, Gift, Other), type (INCOME, EXPENSE, TRANSFER, BILL, SUBSCRIPTION, INVESTMENT, SAVINGS, LOAN, DEBT, SPLIT_BILL), items (array of {name, price}), and notes (string). Respond ONLY with the JSON object.`;
+
+        if (isSplitRequest) {
+          promptText = `You are a financial receipt parser. Extract the following information from the receipt photo in JSON format: merchant (string), amount (number representing total amount in IDR), date (string), category (e.g. Groceries, Food, Bills, Subscription, Entertainment, Health, Travel, Salary, Investment, Savings, Gift, Other), type (INCOME, EXPENSE, TRANSFER, BILL, SUBSCRIPTION, INVESTMENT, SAVINGS, LOAN, DEBT, SPLIT_BILL), items (array of {name, price}), and notes (string).
 
 If the user's message: "${content.replace(/"/g, '\\"')}" requests to split the bill (e.g. "patungan"), change the type to "SPLIT_BILL" and include a "splitDetails" object with the following structure:
 {
@@ -189,6 +199,7 @@ If the user's message: "${content.replace(/"/g, '\\"')}" requests to split the b
 Assume the total number of participants (groupSize) from the context (e.g. if the user says "untuk Salsabila dan Nabil", assume it is a split of 2 people unless the user explicitly indicates otherwise). Divide the bill equally among all participants (including the user) unless specified.
 
 Respond ONLY with the JSON object.`;
+        }
 
         const response = await groq.chat.completions.create({
           model: "qwen/qwen3.6-27b",
@@ -210,7 +221,9 @@ Respond ONLY with the JSON object.`;
           response_format: { type: "json_object" }
         });
         
-        const rawJson = response.choices[0]?.message?.content || "{}";
+        let rawJson = response.choices[0]?.message?.content || "{}";
+        // Sanitize code blocks if wrapped by the Vision model
+        rawJson = rawJson.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
         extractedData = JSON.parse(rawJson);
       } catch (err) {
         console.error("Groq vision OCR failed, falling back to mock parser:", err);
@@ -477,7 +490,7 @@ export async function confirmTransaction(messageId: string, updatedData: any) {
       data: {
         conversationId: message.conversationId,
         role: "assistant",
-        content: `Transaksi patungan Anda berhasil disimpan! 🎉\n\nApakah Anda ingin membagikan tagihan ini kepada teman-teman? Berikut adalah tautan patungan yang dapat Anda bagikan:\n\n🔗 **[Bagikan Tautan Patungan](${shareUrl})**\n\nAtau salin tautan berikut:\n\`${shareUrl}\`\n\n*Catatan: Tautan ini hanya berlaku selama 7 hari atau otomatis ditutup setelah semua patungan dilunasi.*`,
+        content: `Transaksi patungan Anda berhasil disimpan! 🎉\n\nApakah Anda ingin membagikan tagihan ini kepada teman-teman? Berikut adalah tautan patungan yang dapat Anda bagikan:\n\n🔗 [Bagikan Tautan Patungan](${shareUrl})\n\nAtau salin tautan berikut:\n\`${shareUrl}\`\n\n*Catatan: Tautan ini hanya berlaku selama 7 hari atau otomatis ditutup setelah semua patungan dilunasi.*`,
         status: "sent"
       }
     });
