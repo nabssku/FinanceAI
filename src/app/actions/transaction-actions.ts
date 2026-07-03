@@ -226,8 +226,8 @@ export async function getDashboardStats() {
     }
   });
 
-  const totalBudgetLimit = budgets.reduce((acc, b) => acc + b.limit, 0);
-  const totalBudgetSpent = budgets.reduce((acc, b) => acc + b.spent, 0);
+  const totalBudgetLimit = budgets.reduce((acc: number, b: any) => acc + b.limit, 0);
+  const totalBudgetSpent = budgets.reduce((acc: number, b: any) => acc + b.spent, 0);
 
   // Cash flow (last 6 months)
   const cashFlow: any[] = [];

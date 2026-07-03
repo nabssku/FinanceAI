@@ -302,7 +302,7 @@ export default function ChatPage() {
       split.friendsShares = shares;
 
       // Recalculate receivables and user share
-      const friendsSum = shares.reduce((acc, f) => acc + f.shareAmount, 0);
+      const friendsSum = shares.reduce((acc: number, f: any) => acc + f.shareAmount, 0);
       split.receivables = friendsSum;
       split.userShare = prev.amount - friendsSum;
 

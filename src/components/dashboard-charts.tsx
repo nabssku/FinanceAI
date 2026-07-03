@@ -51,7 +51,7 @@ export function CategoryPieChart({ data }: { data: any[] }) {
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return <div className="h-64 bg-zinc-900/20 animate-pulse rounded-xl" />;
 
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const total = data.reduce((sum: number, item: any) => sum + item.value, 0);
 
   return (
     <div className="h-64 w-full flex flex-col md:flex-row items-center justify-center gap-6">
