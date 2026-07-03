@@ -167,7 +167,7 @@ export default async function DashboardPage() {
                 Belum ada transaksi. Catat transaksi baru melalui halaman Chat AI!
               </div>
             ) : (
-              stats.recentTransactions.map((tx) => {
+              stats.recentTransactions.map((tx: any) => {
                 const isIncome = tx.type === "INCOME";
                 
                 return (
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
                   Tidak ada tagihan atau langganan mendatang.
                 </div>
               ) : (
-                stats.upcomingBills.map(bill => (
+                stats.upcomingBills.map((bill: any) => (
                   <div key={bill.id} className="flex justify-between items-center text-xs p-2.5 rounded-lg bg-zinc-950/40 border border-[#27272A]/50">
                     <div className="text-left">
                       <h4 className="font-semibold text-white leading-none">{bill.merchant}</h4>
