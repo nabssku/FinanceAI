@@ -22,14 +22,18 @@ export async function getBudgets(month?: number, year?: number) {
     where: {
       userId,
       type: { in: ["EXPENSE", "BILL", "SUBSCRIPTION", "SPLIT_BILL"] }
-    }
+    },
+    include: { splitBill: true }
   });
 
   const categoryExpenses: Record<string, number> = {};
   transactions.forEach((tx: any) => {
     const txDate = new Date(tx.date);
     if (txDate.getMonth() + 1 === m && txDate.getFullYear() === y) {
-      categoryExpenses[tx.category] = (categoryExpenses[tx.category] || 0) + tx.amount;
+      const amount = tx.type === "SPLIT_BILL" && tx.splitBill
+        ? tx.splitBill.userShare
+        : tx.amount;
+      categoryExpenses[tx.category] = (categoryExpenses[tx.category] || 0) + amount;
     }
   });
 
@@ -56,14 +60,18 @@ export async function saveBudget(category: string, limit: number, month?: number
       userId,
       category,
       type: { in: ["EXPENSE", "BILL", "SUBSCRIPTION", "SPLIT_BILL"] }
-    }
+    },
+    include: { splitBill: true }
   });
 
   let spent = 0;
   transactions.forEach((tx: any) => {
     const txDate = new Date(tx.date);
     if (txDate.getMonth() + 1 === m && txDate.getFullYear() === y) {
-      spent += tx.amount;
+      const amount = tx.type === "SPLIT_BILL" && tx.splitBill
+        ? tx.splitBill.userShare
+        : tx.amount;
+      spent += amount;
     }
   });
 

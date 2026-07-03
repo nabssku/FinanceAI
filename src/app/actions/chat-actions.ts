@@ -466,6 +466,18 @@ export async function confirmTransaction(messageId: string, updatedData: any) {
     data: { status: "saved" }
   });
 
+  if (transaction.type === "SPLIT_BILL" && splitBillId) {
+    const shareUrl = `/share/split/${splitBillId}`;
+    await db.aIMessage.create({
+      data: {
+        conversationId: message.conversationId,
+        role: "assistant",
+        content: `Transaksi patungan Anda berhasil disimpan! 🎉\n\nApakah Anda ingin membagikan tagihan ini kepada teman-teman? Berikut adalah tautan patungan yang dapat Anda bagikan:\n\n🔗 **[Bagikan Tautan Patungan](${shareUrl})**\n\nAtau salin tautan berikut:\n\`${shareUrl}\`\n\n*Catatan: Tautan ini hanya berlaku selama 7 hari atau otomatis ditutup setelah semua patungan dilunasi.*`,
+        status: "sent"
+      }
+    });
+  }
+
   revalidatePath("/chat");
   revalidatePath("/dashboard");
   revalidatePath("/transactions");
@@ -482,4 +494,38 @@ export async function cancelTransaction(messageId: string) {
 
   revalidatePath("/chat");
   return message;
+}
+
+// Pay Friend Share Action
+export async function payFriendShare(friendShareId: string) {
+  const share = await db.friendShare.update({
+    where: { id: friendShareId },
+    data: { isPaid: true },
+    include: {
+      splitBill: {
+        include: {
+          friendsShares: true
+        }
+      }
+    }
+  });
+
+  // Calculate new receivables: total receivables is the sum of unpaid shares
+  const unpaidSharesSum = share.splitBill.friendsShares
+    .filter(s => !s.isPaid)
+    .reduce((sum, s) => sum + s.shareAmount, 0);
+
+  await db.splitBill.update({
+    where: { id: share.splitBillId },
+    data: {
+      receivables: unpaidSharesSum
+    }
+  });
+
+  revalidatePath(`/share/split/${share.splitBillId}`);
+  revalidatePath("/chat");
+  revalidatePath("/dashboard");
+  revalidatePath("/transactions");
+  revalidatePath("/budgets");
+  return share;
 }

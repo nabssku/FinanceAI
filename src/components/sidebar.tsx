@@ -4,15 +4,15 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { 
-  LayoutDashboard, 
-  Sparkles, 
-  Receipt, 
-  BarChart3, 
-  Wallet, 
-  Settings, 
-  User, 
-  HelpCircle, 
+import {
+  LayoutDashboard,
+  Sparkles,
+  Receipt,
+  BarChart3,
+  Wallet,
+  Settings,
+  User,
+  HelpCircle,
   LogOut,
   WalletCards
 } from "lucide-react";
@@ -33,9 +33,8 @@ export function Sidebar({ theme }: { theme?: string }) {
   ];
 
   return (
-    <aside className={`w-64 border-r border-[#27272A] flex flex-col h-screen sticky top-0 shrink-0 z-30 transition-all duration-300 ${
-      theme === 'glass' ? 'bg-[#18181B]/60 backdrop-blur-xl' : 'bg-[#18181B]'
-    }`}>
+    <aside className={`w-64 border-r border-[#27272A] flex flex-col h-screen sticky top-0 shrink-0 z-30 transition-all duration-300 ${theme === 'glass' ? 'bg-[#18181B]/60 backdrop-blur-xl' : 'bg-[#18181B]'
+      }`}>
       {/* Brand Header */}
       <div className="p-6 border-b border-[#27272A] flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center neon-glow-primary">
@@ -44,7 +43,7 @@ export function Sidebar({ theme }: { theme?: string }) {
         <div>
           <h1 className="font-bold text-lg text-[#FAFAFA] tracking-tight">FinanceAI</h1>
           <span className="text-[10px] text-emerald-500 font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 uppercase tracking-widest">
-            Venture Beta
+            MASIH BETA YA!
           </span>
         </div>
       </div>
@@ -54,25 +53,23 @@ export function Sidebar({ theme }: { theme?: string }) {
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname.startsWith(item.href);
-          
+
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                isActive
-                  ? item.highlight 
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${isActive
+                  ? item.highlight
                     ? "bg-indigo-600/20 text-[#FAFAFA] border border-indigo-500/30 neon-glow-primary"
                     : "bg-[#27272A] text-[#FAFAFA] border border-transparent"
                   : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#1f1f23] border border-transparent"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 shrink-0 transition-colors ${
-                  isActive 
-                    ? item.highlight ? "text-indigo-400" : "text-[#FAFAFA]" 
+                <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive
+                    ? item.highlight ? "text-indigo-400" : "text-[#FAFAFA]"
                     : "text-[#A1A1AA] group-hover:text-[#FAFAFA]"
-                }`} />
+                  }`} />
                 <span>{item.name}</span>
               </div>
               {item.highlight && !isActive && (
@@ -84,12 +81,11 @@ export function Sidebar({ theme }: { theme?: string }) {
       </nav>
 
       {/* User Session Footer Card */}
-      <div className={`p-4 border-t border-[#27272A] flex flex-col gap-3 transition-all duration-300 ${
-        theme === 'glass' ? 'bg-[#121214]/40' : 'bg-[#121214]'
-      }`}>
+      <div className={`p-4 border-t border-[#27272A] flex flex-col gap-3 transition-all duration-300 ${theme === 'glass' ? 'bg-[#121214]/40' : 'bg-[#121214]'
+        }`}>
         <div className="flex items-center gap-3">
-          <img 
-            src={session?.user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"} 
+          <img
+            src={session?.user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"}
             alt="Profile Avatar"
             className="w-10 h-10 rounded-full object-cover border border-[#27272A] bg-zinc-800"
           />

@@ -162,7 +162,14 @@ export async function getDashboardStats() {
   startOfMonth.setHours(0, 0, 0, 0);
 
   const transactions = await db.transaction.findMany({
-    where: { userId }
+    where: { userId },
+    include: {
+      splitBill: {
+        include: {
+          friendsShares: true
+        }
+      }
+    }
   });
 
   // Calculations
@@ -187,8 +194,21 @@ export async function getDashboardStats() {
       tx.type === "SUBSCRIPTION" || 
       tx.type === "SPLIT_BILL"
     ) {
-      currentBalance -= tx.amount;
-      if (isCurrentMonth) monthlyExpense += tx.amount;
+      const actualExpense = tx.type === "SPLIT_BILL" && tx.splitBill
+        ? tx.splitBill.userShare
+        : tx.amount;
+      
+      let cashOut = tx.amount;
+      if (tx.type === "SPLIT_BILL" && tx.splitBill) {
+        const paidBack = tx.splitBill.friendsShares
+          ? tx.splitBill.friendsShares
+              .filter((s: any) => s.isPaid)
+              .reduce((sum: number, s: any) => sum + s.shareAmount, 0)
+          : 0;
+        cashOut = tx.amount - paidBack;
+      }
+      currentBalance -= cashOut;
+      if (isCurrentMonth) monthlyExpense += actualExpense;
     } else if (tx.type === "SAVINGS" || tx.type === "INVESTMENT") {
       currentBalance -= tx.amount; // Moves from liquid balance to investments/savings
       if (isCurrentMonth) totalSavings += tx.amount;
@@ -209,7 +229,10 @@ export async function getDashboardStats() {
       );
     })
     .forEach((tx: any) => {
-      categoryMap[tx.category] = (categoryMap[tx.category] || 0) + tx.amount;
+      const amount = tx.type === "SPLIT_BILL" && tx.splitBill
+        ? tx.splitBill.userShare
+        : tx.amount;
+      categoryMap[tx.category] = (categoryMap[tx.category] || 0) + amount;
     });
 
   const breakdown = Object.entries(categoryMap).map(([name, value]) => ({
@@ -244,7 +267,12 @@ export async function getDashboardStats() {
       const txDate = new Date(tx.date);
       if (txDate.getMonth() === month && txDate.getFullYear() === year) {
         if (tx.type === "INCOME") inc += tx.amount;
-        if (["EXPENSE", "BILL", "SUBSCRIPTION", "SPLIT_BILL"].includes(tx.type)) exp += tx.amount;
+        if (["EXPENSE", "BILL", "SUBSCRIPTION", "SPLIT_BILL"].includes(tx.type)) {
+          const amount = tx.type === "SPLIT_BILL" && tx.splitBill
+            ? tx.splitBill.userShare
+            : tx.amount;
+          exp += amount;
+        }
       }
     });
 

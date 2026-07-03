@@ -253,7 +253,14 @@ export default function TransactionsPage() {
                         {new Date(tx.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </td>
                       <td className={`p-4 text-right font-extrabold ${isIncome ? 'text-emerald-400' : 'text-[#FAFAFA]'}`}>
-                        {isIncome ? "+" : "-"} Rp{tx.amount.toLocaleString('id-ID')}
+                        {tx.type === "SPLIT_BILL" && tx.splitBill ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-[#FAFAFA]">- Rp{tx.amount.toLocaleString('id-ID')}</span>
+                            <span className="text-[10px] text-indigo-400 font-bold mt-0.5">Porsi Anda: Rp{tx.splitBill.userShare.toLocaleString('id-ID')}</span>
+                          </div>
+                        ) : (
+                          `${isIncome ? "+" : "-"} Rp${tx.amount.toLocaleString('id-ID')}`
+                        )}
                       </td>
                       <td className="p-4 text-center">
                         <div className="flex items-center justify-center gap-2">

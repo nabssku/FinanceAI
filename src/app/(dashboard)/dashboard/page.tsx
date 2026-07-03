@@ -189,7 +189,14 @@ export default async function DashboardPage() {
                     </div>
                     <div className="text-right">
                       <p className={`text-xs font-bold ${isIncome ? 'text-emerald-400' : 'text-[#FAFAFA]'}`}>
-                        {isIncome ? "+" : "-"} Rp{tx.amount.toLocaleString('id-ID')}
+                        {tx.type === "SPLIT_BILL" && tx.splitBill ? (
+                          <span className="flex flex-col items-end">
+                            <span>- Rp{tx.amount.toLocaleString('id-ID')}</span>
+                            <span className="text-[8px] text-indigo-400 font-bold mt-0.5">Porsi Anda: Rp{tx.splitBill.userShare.toLocaleString('id-ID')}</span>
+                          </span>
+                        ) : (
+                          `${isIncome ? "+" : "-"} Rp${tx.amount.toLocaleString('id-ID')}`
+                        )}
                       </p>
                       {tx.tags.length > 0 && (
                         <span className="text-[8px] text-[#A1A1AA] bg-zinc-800 px-1 py-0.5 rounded ml-1">
