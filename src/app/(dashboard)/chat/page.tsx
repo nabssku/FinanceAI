@@ -17,7 +17,8 @@ import {
   FileText,
   DollarSign,
   Loader2,
-  Receipt
+  Receipt,
+  History
 } from "lucide-react";
 import { 
   getConversations, 
@@ -34,6 +35,7 @@ export default function ChatPage() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [inputText, setInputText] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
   
   // Receipt Upload States
   const [uploading, setUploading] = useState(false);
@@ -100,7 +102,6 @@ export default function ChatPage() {
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!inputText.trim() && !selectedFile) return;
-    if (!activeConvId) return;
 
     const textToSend = inputText;
     setInputText("");
@@ -125,11 +126,25 @@ export default function ChatPage() {
         }
       }
 
+      // 1.5. If no active conversation, create one automatically
+      let targetConvId = activeConvId;
+      if (!targetConvId) {
+        try {
+          const newChat = await createConversation("Chat " + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric' }));
+          setConversations(prev => [newChat, ...prev]);
+          setActiveConvId(newChat.id);
+          targetConvId = newChat.id;
+        } catch (err) {
+          console.error("Failed to auto-create conversation", err);
+          return;
+        }
+      }
+
       // Optimistic user message addition
       const tempUserMsg = {
         id: `temp-${Date.now()}`,
         role: "user",
-        content: textToSend || "Uploaded a receipt photo",
+        content: textToSend || "Mengunggah foto struk belanja",
         receiptUrl: receiptUrl || null,
         createdAt: new Date()
       };
@@ -137,9 +152,9 @@ export default function ChatPage() {
 
       // 2. Call Send Message action
       try {
-        await sendMessage(activeConvId, textToSend, receiptUrl);
+        await sendMessage(targetConvId, textToSend, receiptUrl);
         // Reload messages to retrieve actual database records
-        await loadMessages(activeConvId);
+        await loadMessages(targetConvId);
       } catch (err) {
         console.error("Failed to send message", err);
       }
@@ -316,6 +331,66 @@ export default function ChatPage() {
   return (
     <div className="h-[calc(100vh-88px)] flex gap-6 overflow-hidden relative">
       
+      {/* MOBILE CHAT HISTORY DRAWER */}
+      {historyOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-md md:hidden"
+          onClick={() => setHistoryOpen(false)}
+        >
+          <div 
+            className="absolute top-0 bottom-0 left-0 w-72 bg-[#18181B] border-r border-[#27272A] p-4 flex flex-col gap-4 animate-slide-right"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <span className="text-xs font-bold text-[#FAFAFA] tracking-wide uppercase">Riwayat Chat</span>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    handleNewChat();
+                    setHistoryOpen(false);
+                  }}
+                  className="p-1.5 rounded-lg bg-[#27272A] hover:bg-zinc-800 text-[#FAFAFA] border border-[#27272A] cursor-pointer"
+                  title="Mulai Chat Baru"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+                <button 
+                  onClick={() => setHistoryOpen(false)}
+                  className="p-1.5 rounded-lg bg-zinc-900 border border-[#27272A] text-[#A1A1AA] hover:text-white cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-1">
+              {conversations.length === 0 ? (
+                <div className="p-6 text-center text-xs text-[#A1A1AA]">
+                  Belum ada riwayat percakapan.
+                </div>
+              ) : (
+                conversations.map(conv => (
+                  <button
+                    key={conv.id}
+                    onClick={() => {
+                      setActiveConvId(conv.id);
+                      setHistoryOpen(false);
+                    }}
+                    className={`w-full text-left p-3 rounded-xl text-xs font-medium transition-all truncate border ${
+                      activeConvId === conv.id 
+                        ? "bg-indigo-600/10 text-indigo-400 border-indigo-500/20 font-semibold" 
+                        : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#202024] border-transparent"
+                    }`}
+                  >
+                    {conv.title}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* CHAT SESSION LIST (SIDEBAR PANEL) */}
       <div className="w-64 bg-[#18181B] border border-[#27272A] rounded-2xl flex flex-col overflow-hidden shrink-0 hidden md:flex">
         <div className="p-4 border-b border-[#27272A] flex items-center justify-between">
@@ -347,14 +422,25 @@ export default function ChatPage() {
       {/* CHAT CONSOLE */}
       <div className="flex-1 bg-[#18181B] border border-[#27272A] rounded-2xl flex flex-col overflow-hidden shadow-xl">
         {/* Chat Stream Header */}
-        <div className="px-6 py-4 border-b border-[#27272A] flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
+        <div className="px-6 py-4 border-b border-[#27272A] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-xs font-bold text-[#FAFAFA]">Area Kerja Asisten</h3>
+              <p className="text-[10px] text-[#A1A1AA]">Tulis kalimat seperti "Beli kopi Rp25.000" atau unggah foto struk</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-xs font-bold text-[#FAFAFA]">Area Kerja Asisten</h3>
-            <p className="text-[10px] text-[#A1A1AA]">Tulis kalimat seperti "Beli kopi Rp25.000" atau unggah foto struk</p>
-          </div>
+
+          {/* Mobile History Toggle Button */}
+          <button
+            onClick={() => setHistoryOpen(true)}
+            className="md:hidden p-2 rounded-lg bg-[#27272A] hover:bg-zinc-800 text-[#FAFAFA] border border-[#27272A] flex items-center gap-1.5 text-[10px] font-bold transition-all cursor-pointer"
+          >
+            <History className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Riwayat</span>
+          </button>
         </div>
 
         {/* Message Log */}
